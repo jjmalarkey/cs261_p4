@@ -2,16 +2,12 @@ package dispatch;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Scanner;
-import java.util.List;
-import java.util.ArrayList;
-import java.io.File;
 
 import dispatch.*;
 
 public class Threats {
-	public Map<String, Map<String, Emergency.Threat>> keywordCategory; //for resolving type of emergency, and severity
-	public Map<String, Emergency.Responder> responseCategory;
+	private Map<String, Map<String, Emergency.Threat>> keywordCategory; //for resolving type of emergency, and severity
+	private Map<String, Emergency.Responder> responseCategory;
 
 	public Emergency categorizeCall(String call) {
 		String category;
@@ -26,7 +22,6 @@ public class Threats {
 				Map<String, Emergency.Threat> v = entry.getValue();
 				if(v.containsKey("all")) {
 					response.priority = v.get("all");
-					System.out.println(response.priority);
 				} else {
 				for (Map.Entry<String, Emergency.Threat> inEntry : v.entrySet()) {
 					String type = inEntry.getKey();
