@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.io.File;
 import java.util.Queue;
 import java.util.PriorityQueue;
+import java.util.Map;
+import java.util.HashMap;
 
 import dispatch.*;
 
@@ -18,8 +20,22 @@ class Dispatch {
 		if (args.length != 1) {
 			System.out.println("Please input call queue file: ./Dispatch <textfile>");
 		} else { //proceed with processing input
+			Map<String, Station> stations = new HashMap<String, Station>();
+			Station al = new Station("Alabama", STATION_MAX);
+			stations.put("Alabama", al);
+			Station bj = new Station("Bon Jovi", STATION_MAX);
+			stations.put("Bon Jovi", bj);
+			Station bn = new Station("Boston", STATION_MAX);
+			stations.put("Boston", bn);
+			Station ch = new Station("Chicago", STATION_MAX);
+			stations.put("Chicago", ch);
+			Station ka = new Station("Kansas", STATION_MAX);
+			stations.put("Kansas", ka);
+			Station jn = new Station("Journey", STATION_MAX);
+			stations.put("Journey", jn);
+			Station sv = new Station("Survivor", STATION_MAX);
+			stations.put("Survivor", sv);
 			Queue<Emergency> queue = new PriorityQueue<Emergency>();
-			//List<String> list = new ArrayList<String>();
 			Queue<String> list = new LinkedList<String>();
 			List<Emergency> leftover = new ArrayList<Emergency>();
 			try {
@@ -30,27 +46,16 @@ class Dispatch {
 			} catch (Exception e) {
 				System.out.println("Dispatch input error: " + e.getMessage());
 			}
-			//System.out.println(list.size());
-			//main operation loop
-			/*
-			int count = 0;
-			for (String x : list) {
-				queue.add(thr.categorizeCall(x));
-				count++;
-				if(count > 10) {
-					break;
-				}
-			}
-			while(!q.isEmpty()) {
-				Emergency e = queue.remove();
-				e.printout();
-			}
-			*/
+			int daysPassed = 0;
 			int countQueued = 0;
 			boolean stop = false;
-			while(!list.isEmpty()) {
+			while(!list.isEmpty() || !leftover.isEmpty()) {
 				//take in requests per day
 				while(countQueued < REQUESTS_PER_DAY && !stop) {
+					//refresh daily request cap
+					for(Station stat : stations.values()) {
+						stat.reset();
+					}
 					if(list.size() > 0) {
 						String call = list.remove();
 						queue.add(thr.categorizeCall(call));
@@ -59,13 +64,24 @@ class Dispatch {
 						stop = true;
 					}
 				}
-				System.out.println("=====");
+				System.out.println("======= Processing requests for day " + daysPassed);
+				System.out.println("======= " + leftover.size() + " requests carried over from previous day");
+				if(leftover.size() > 0) {
+					queue.addAll(leftover);
+					leftover.clear();
+				}
 				while(!queue.isEmpty()) {
 					Emergency er = queue.remove();
-					er.printout();
+					Station stat = stations.get(er.getStation());
+					//if can be processed by station, do not add to leftovers
+					if(stat.processEmergency(er)) {
+						leftover.add(er);
+					}
+					//else do not
 				}
 				countQueued = 0;
 				stop = false;
+				daysPassed++;
 			}
 		}
 	}

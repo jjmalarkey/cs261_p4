@@ -2,12 +2,15 @@ package dispatch;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 import dispatch.*;
 
 public class Threats {
 	private Map<String, Map<String, Emergency.Threat>> keywordCategory; //for resolving type of emergency, and severity
 	private Map<String, Emergency.Responder> responseCategory;
+	private ArrayList<String> stationMatch;
 
 	public Emergency categorizeCall(String call) {
 		String category;
@@ -22,23 +25,41 @@ public class Threats {
 				Map<String, Emergency.Threat> v = entry.getValue();
 				if(v.containsKey("all")) {
 					response.priority = v.get("all");
+					break;
 				} else {
 				for (Map.Entry<String, Emergency.Threat> inEntry : v.entrySet()) {
 					String type = inEntry.getKey();
 					if(call.contains(type)) {
 						response.priority = inEntry.getValue();
 						foundCategory = true;
+						break;
 					}
 				}
 				if(foundCategory == false)
 					response.priority = v.get("else");
+					break;
 				}
+			}
+		}
+		//get station name
+		for(String stat : stationMatch) {
+			if(call.contains(stat)) {
+				response.station = stat;
+				break;
 			}
 		}
 		return response;
 	}
 
 	public Threats(){
+		stationMatch = new ArrayList<String>();
+		stationMatch.add("Alabama");
+		stationMatch.add("Bon Jovi");
+		stationMatch.add("Boston");
+		stationMatch.add("Chicago");
+		stationMatch.add("Journey");
+		stationMatch.add("Kansas");
+		stationMatch.add("Survivor");
 		keywordCategory = new HashMap<String, Map<String, Emergency.Threat>>(); //for resolving type of emergency
 		Map<String, Emergency.Threat> veh = new HashMap<String, Emergency.Threat>();
 		Map<String, Emergency.Threat> env = new HashMap<String, Emergency.Threat>();

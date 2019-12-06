@@ -16,8 +16,12 @@ public class Emergency implements Comparable<Emergency> {
 		call = c;
 	}
 
-	public void printout() {
-		System.out.println("CALL: " + call + "\tTHREAT: " + priority + "\tRESPONSE: " + responder);
+	public void respond() {
+		System.out.println("Dispatching " + priority + " " + responder + " responder to " + station);
+	}
+
+	public String getStation() {
+		return station;
 	}
 
 	public int compareTo(Emergency er) { //if this is less important than argument, return -1; greater, 1; even, 0

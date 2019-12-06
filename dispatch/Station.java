@@ -12,24 +12,28 @@ import dispatch.*;
 
 public class Station {
 	private String name;
-	private Queue dispatchQueue;	
 	private int maxToProcess; // number to process per day
 	private int processed;
 
-	public int enqueueEmergency(Emergency er) {	//will add to queue umnless not possible
+	public boolean processEmergency(Emergency er) {	//will add to queue umnless not possible
 		//if can add to queue, adds to queue, return 1
 		//else, return 0
-		if((er.priority != Threat.HIGH) && (processed >= maxToProcess)) {
-			return 0;
-		} else {
-			return 1;
+		if((er.priority != Emergency.Threat.HIGH) && (processed >= maxToProcess)) {
+			return true;
+		} else { //do stuff
+			er.respond();
+			processed++;
+			return false;
 		}
+	}
+
+	public void reset() {
+		processed = 0;
 	}
 
 	public Station(String stationName, int stationMax) {
 		name = stationName;
 		maxToProcess = stationMax;
 		processed = 0;
-		//dispatchQueue = new PriorityQueue<Emergency>();
 	}
 }
