@@ -46,7 +46,7 @@ class Dispatch {
 			} catch (Exception e) {
 				System.out.println("Dispatch input error: " + e.getMessage());
 			}
-			int daysPassed = 0;
+			int daysPassed = 1;
 			int countQueued = 0;
 			boolean stop = false;
 			while(!list.isEmpty() || !leftover.isEmpty()) {
@@ -64,7 +64,7 @@ class Dispatch {
 						stop = true;
 					}
 				}
-				System.out.println("======= Processing requests for day " + daysPassed);
+				System.out.println("\n======= Processing requests for day " + daysPassed);
 				System.out.println("======= " + leftover.size() + " requests carried over from previous day");
 				if(leftover.size() > 0) {
 					queue.addAll(leftover);
