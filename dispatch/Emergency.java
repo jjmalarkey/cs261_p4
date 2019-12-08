@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class Emergency implements Comparable<Emergency> {
 	public enum Threat { HIGH, MEDIUM, LOW };
 	public enum Responder { ENVIRONMENT, MEDICAL, VEHICLE, FACILITY };
+	Integer order; //for resolving first come first serve
 	Threat priority;
 	Responder responder;
 	String call;
@@ -25,6 +26,11 @@ public class Emergency implements Comparable<Emergency> {
 	}
 
 	public int compareTo(Emergency er) { //if this is less important than argument, return -1; greater, 1; even, 0
-		return priority.compareTo(er.priority);
+		if(priority.compareTo(er.priority) != 0) {
+			return priority.compareTo(er.priority);
+		} 
+		else { //in the cases of equal 'weight' it must be ordered by first come first serve
+			return (order.compareTo(er.order)); //flip, because a lower number means more important
+		}
 	}
 }

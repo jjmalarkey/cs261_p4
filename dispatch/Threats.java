@@ -12,6 +12,8 @@ public class Threats {
 	private Map<String, Emergency.Responder> responseCategory;
 	private ArrayList<String> stationMatch;
 
+	private int threatsOccurred; //this makes sense from the threats perspective because of prioritizing based on order
+
 	public Emergency categorizeCall(String call) {
 		String category;
 		Emergency response = new Emergency(call);
@@ -48,10 +50,12 @@ public class Threats {
 				break;
 			}
 		}
+		response.order = ++threatsOccurred;
 		return response;
 	}
 
 	public Threats(){
+		threatsOccurred = 0;
 		stationMatch = new ArrayList<String>();
 		stationMatch.add("Alabama");
 		stationMatch.add("Bon Jovi");
